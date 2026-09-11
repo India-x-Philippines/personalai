@@ -1,0 +1,14 @@
+{
+  "apps": {
+    "microsoft_photos": {
+      "enabled": true,
+      "permissions": {
+        "read_images": "ALLOW",
+        "edit_images": "ALLOW",
+        "create_images": "ALLOW",
+        "modify_original": "ASK",
+        "delete_images": "DENY"
+      }
+    }
+  }
+}

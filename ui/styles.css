@@ -1,0 +1,407 @@
+/* ==========================================================================
+   F.R.I.D.A.Y. — Personal AI Assistant Interface
+   Cinematic Minimalist Reference Design
+   ========================================================================== */
+
+:root {
+    --bg-void: #020203;
+    --amber-primary: #ffaa00;
+    --amber-bright: #ffc44d;
+    --amber-glow: rgba(255, 170, 0, 0.5);
+    
+    --cyan-accent: #00e5ff;
+    --cyan-glow: rgba(0, 229, 255, 0.4);
+    
+    --text-white: #ffffff;
+    --text-muted: #736b63;
+
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-void);
+    color: var(--text-white);
+    font-family: var(--font-body);
+}
+
+/* Three.js Canvas */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Soft Radial Vignette Overlay */
+.vignette-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(circle at center, transparent 35%, rgba(2, 2, 3, 0.95) 90%);
+}
+
+/* Cinematic Overlay Container */
+.cinematic-ui {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25px 40px;
+    pointer-events: none;
+}
+
+.cinematic-ui * {
+    pointer-events: auto;
+}
+
+/* TOP NAVIGATION BAR */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.top-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    color: var(--text-white);
+    letter-spacing: 2px;
+}
+
+.brand-status {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    color: var(--amber-primary);
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+
+.top-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.center-title {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 10px;
+    color: var(--text-white);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.center-subtitle {
+    font-family: var(--font-heading);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 4px;
+    margin-top: 2px;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.top-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 170, 0, 0.2);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    border-color: var(--amber-primary);
+    color: var(--amber-primary);
+    box-shadow: 0 0 10px var(--amber-glow);
+}
+
+.clock-display {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--amber-primary);
+    letter-spacing: 1px;
+}
+
+/* SIDE WIDGETS LAYOUT */
+.side-widgets {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 120px;
+    pointer-events: none;
+}
+
+.widget-left {
+    left: 40px;
+}
+
+.widget-right {
+    right: 40px;
+    align-items: flex-end;
+}
+
+/* LEFT: SYSTEM NORMAL */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.target-ring-mini {
+    width: 24px;
+    height: 24px;
+    border: 1px dashed var(--cyan-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+.ring-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--cyan-accent);
+    border-radius: 50%;
+}
+
+.status-text-group {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+.status-lbl {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+.status-val.cyan {
+    color: var(--cyan-accent);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* LEFT: 72% RADIAL GAUGE */
+.radial-gauge-container {
+    position: relative;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.gauge-bg {
+    fill: none;
+    stroke: rgba(0, 229, 255, 0.15);
+    stroke-width: 3;
+}
+
+.gauge-fill {
+    fill: none;
+    stroke: var(--cyan-accent);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px var(--cyan-accent));
+}
+
+.gauge-text {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+/* RIGHT: LISTENING AUDIO VISUALIZER */
+.listening-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+#right-audio-canvas {
+    width: 160px;
+    height: 45px;
+}
+
+.listening-lbl {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+}
+
+/* RIGHT: WEATHER WIDGET */
+.weather-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-family: var(--font-mono);
+    border-right: 2px solid var(--cyan-accent);
+    padding-right: 10px;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cyan-accent);
+}
+
+.weather-icon {
+    font-size: 16px;
+    filter: drop-shadow(0 0 6px var(--cyan-glow));
+}
+
+.weather-temp {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+.weather-desc {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+/* CENTER BOTTOM: TAP TO SPEAK TRIGGER */
+.center-bottom-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    z-index: 15;
+}
+
+.mic-circle-btn {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(255, 170, 0, 0.15) 0%, transparent 70%);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.mic-ring-outer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--amber-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--amber-glow);
+    animation: ring-pulse 3s infinite alternate;
+}
+
+.mic-ring-inner {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border: 1px dashed rgba(255, 170, 0, 0.4);
+    border-radius: 50%;
+}
+
+.mic-icon {
+    font-size: 26px;
+    color: var(--amber-primary);
+    filter: drop-shadow(0 0 10px var(--amber-primary));
+    transition: transform 0.2s ease;
+}
+
+.mic-circle-btn:hover {
+    transform: scale(1.08);
+}
+
+.mic-circle-btn:hover .mic-ring-outer {
+    box-shadow: 0 0 25px var(--amber-bright);
+}
+
+.mic-circle-btn.active .mic-ring-outer {
+    border-color: #00ff88;
+    box-shadow: 0 0 25px #00ff88;
+}
+
+.mic-circle-btn.active .mic-icon {
+    color: #00ff88;
+}
+
+@keyframes ring-pulse {
+    0% { transform: scale(0.96); opacity: 0.7; }
+    100% { transform: scale(1.04); opacity: 1; }
+}
+
+.trigger-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+}
